@@ -32,6 +32,16 @@ class Items extends React.Component {
         this.setState({ value: "" });
       });
   };
+  handleDelete =ite => e => {
+    console.log(ite)
+    axios.post(`http://127.0.0.1:5000/projects/${this.props.match.params.id}/delete_item`,{item:ite})
+       .then(() => {
+         this.jsonDataFromFlask();
+       })
+       .then(() => {
+         this.printState();
+       })
+   };
 
   handleOnChange = (e) => {
     this.setState({ value: e.target.value });
@@ -40,7 +50,9 @@ class Items extends React.Component {
 
   printState() {
     console.log(this.state)
-    let a = this.state.list.map((value) => <li key={value}> {value} </li>);
+    let a = this.state.list.map((value) => <li key={value}> {value} 
+    <MyButton_del onClick={this.handleDelete(value)} />
+    </li>);
    
     return a;
   }
@@ -50,13 +62,17 @@ class Items extends React.Component {
   }
 
   render() {
-    console.log(this.props.match.params.id);
+
     return (
       <div>
-        <h2 align="center">Items</h2>
+        <div className="Project" >
+        <h2 >Items</h2>
         <Input onChange={this.handleOnChange} value={this.state.value} />
         <MyButton onClick={this.handleSubmit} />
+        <ul className="MyUl">
         {this.printState()}
+        </ul>
+        </div>
       </div>
     );
   }
@@ -64,14 +80,19 @@ class Items extends React.Component {
 
 class MyButton extends React.Component {
   render() {
-    return <button onClick={this.props.onClick}>Submit</button>;
+    return <button className="MyButton" onClick={this.props.onClick}>Submit</button>;
+  }
+}
+class MyButton_del extends React.Component {
+  render() {
+    return <button  onClick={this.props.onClick}>X</button>;
   }
 }
 
 class Input extends React.Component {
   render() {
     return (
-      <input onChange={this.props.onChange} value={this.props.value}></input>
+      <input className="MyInput" onChange={this.props.onChange} value={this.props.value}></input>
     );
   }
 }
