@@ -18,24 +18,39 @@ import {
   useHistory,
   useLocation,
 } from "react-router-dom";
-import axios from "axios";
+
+const logout = function(){
+  localStorage.clear()
+  window.location.href = '/login'
+}
 
 const token = localStorage.getItem("token");
 if (token) {
     setAuthToken(token);
 }
-let logout = function(){
-  localStorage.clear()
-  window.location.href = '/projects'
-}
-const authContext = React.createContext("authContext");
-export default authContext
 
+
+// class Logout extends React.Component{
+//   render(){
+//     return(
+//       <Route>
+//         render={  
+//     <Redirect 
+//                 to={{
+//                   pathname: '/login',
+//                   state: { from: location }
+//                 }}
+//               />}
+//               </Route>
+              
+//     )
+//   }
+// }
 class PrivateRoute extends React.Component {
 
   render() {
     const { children,...rest } = this.props;
-    let auth = false;
+    let auth = token;
     return (
       <Route
       {...rest}
@@ -77,26 +92,30 @@ class App extends React.Component {
             <Link to="/login">Login</Link>
             </li>
             <li>
-            
+            <Logout></Logout>
             </li>
           </ul>
+         
           <Switch>
             <Route exact path="/">
               <Home />
             </Route>
             
-            
+        
             {/* <Route exact path="/projects" component={Projects}></Route> */}
             <PrivateRoute
               exact
               path="/projects"
-              component={Projects}
-            ></PrivateRoute>
-            <Route exact path="/projects/:id" component={Items}></Route>
+            >  {" "}
+            <Projects />{" "}</PrivateRoute>
+            <Route exact path="/projects/:id" component={Items}>
+            </Route>
             <Route exact path="/register" component={Register}></Route>
             <Route exact path="/login">
               {" "}
               <Login />{" "}
+              {/* <Route exact path="/logout" >{' '}<Logout></Logout>{}
+            </Route> */}
             {/* <Route exact path="/logout" component={Logout}></Route> */}
             
             </Route>
@@ -106,7 +125,11 @@ class App extends React.Component {
     );
   }
 }
-
+class Logout extends React.Component {
+  render() {
+    return <Link to="/"  onClick={logout}>Logout</Link>;
+  }
+}
 class Home extends React.Component {
   render() {
     return (
