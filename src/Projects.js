@@ -11,15 +11,27 @@ class Projects extends React.Component {
   }
 
   printState() {
-    let a = this.state.list.map((value) => (
+    // let a = this.state.list.map((value) => (
   
-     <ul className="MyUl">
-      <li className="MyLi">
-        <Link to={`/projects/${value.id}`}style={{ color:'red' }}>{value.name}  </Link>
-      </li>
-      </ul>
-    ));
-    return a;
+    //  <ul className="MyUl">
+    //   <li key={value.name} className="MyLi">
+    //    
+    //     <Link to={`/projects/${value.id}`}style={{ color:'red' }}>{value.name}  </Link>
+    //     <MyButton_del onClick={this.handleDelete(value.id)} />
+    //     </div>
+    //   </li>
+    //   </ul>
+    // ));
+    // return a;
+  
+      console.log(this.state)
+      let a = this.state.list.map((value) => (
+      <li key={value.name} className="MyLi"><Link to={`/projects/${value.id}`}style={{ color:'red' }}>{value.name}  </Link>
+      <MyButton_del onClick={this.handleDelete(value.id)} />
+      </li>)
+      )
+      return a;
+    
   }
 
   jsonDataFromFlask() {
@@ -50,6 +62,19 @@ class Projects extends React.Component {
         this.setState({ value: "" });
       });
   };
+  handleDelete =project_id => e => {
+    console.log(project_id)
+    axios.post(`http://127.0.0.1:5000/projects/delete_project`,{id:project_id})
+       .then(() => {
+         this.jsonDataFromFlask();
+       })
+       .then(() => {
+         this.printState();
+       })
+       .then(() => {
+         this.setState({ value: "" });
+       });
+   };
 
   // this.jsonDataFromFlask()
 
@@ -73,13 +98,15 @@ class Projects extends React.Component {
 
   render() {
     return (
-      <div >
-        <div className="Project">
+      <div>
+        <div className="Project" >
         <h2 >Projects</h2>
         <Input onChange={this.handleOnChange} value={this.state.value} />
         <MyButton onClick={this.handleSubmit} />
         </div>
+        <ul className="MyUl">
         {this.printState()}
+        </ul>
         </div>
     );
   }
@@ -88,6 +115,11 @@ class Projects extends React.Component {
 class MyButton extends React.Component {
   render() {
     return <button className="MyButton" onClick={this.props.onClick}>Submit</button>;
+  }
+}
+class MyButton_del extends React.Component {
+  render() {
+    return <button  onClick={this.props.onClick}>X</button>;
   }
 }
 
@@ -99,15 +131,5 @@ class Input extends React.Component {
   }
 }
 
-class Items extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { value: "", list: [] };
-  }
-
-  render() {
-    return <div>1</div>;
-  }
-}
 
 export default Projects;

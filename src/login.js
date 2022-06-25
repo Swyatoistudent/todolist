@@ -67,8 +67,8 @@ class Login extends React.Component {
     console.log(this.state);
     return (
       <div align="center">
+        <h1 align="center">Login</h1>
         
-        <div className="">
         <label for="username">Username:</label>
         <Input
           onChange={this.handleOnChange("username")}
@@ -80,7 +80,6 @@ class Login extends React.Component {
           value={this.state.password}
         />
         <MyButton onClick={this.handleSubmit} />
-        </div>
       </div>
     );
   }
