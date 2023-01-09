@@ -11,28 +11,7 @@ class Register extends React.Component {
     this.state = { username: "", password: "", list: [] };
   }
 
-  // handleSubmit = (e) => {
-  //   fetch("http://127.0.0.1:5000/login", {
-  //     method: "POST",
-  //     mode: "cors",
-  //     cache: "no-cache",
-  //     credentials: "same-origin",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
 
-  //     body: JSON.stringify({
-  //       username: this.state.username,
-  //       password: this.state.password,
-  //     }),
-  //   }).then((response) => {
-
-  //     response.json().then(function (result) {
-  //       localStorage.setItem("access_token", result['access_token']);
-  //       setAuthToken(result['access_token']);
-  //     });
-  //   });
-  // };
   handleSubmit = (e) => {
     //reqres registered sample user
     const loginPayload = {
@@ -47,7 +26,7 @@ class Register extends React.Component {
         //set JWT token to local
 
   
- //redirect user to home page
+ window.location.href = '/projects'
        
       }) 
       .catch(err => console.log(err));
@@ -60,7 +39,6 @@ class Register extends React.Component {
   };
 
   render() {
-    console.log(this.state);
     return (
       <div align="center">
          <h1 align="center">Logup</h1>

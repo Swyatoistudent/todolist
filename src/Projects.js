@@ -1,36 +1,34 @@
-import logo from "./logo.svg";
+
 import "./App.css";
 import React, { Component } from "react";
 import axios from 'axios';
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as  Link } from "react-router-dom";
 
 class Projects extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { value: "", list: [] };
+    this.state = { value: "", list: [],table:[0,1,2,3] };
   }
 
   printState() {
-    // let a = this.state.list.map((value) => (
-  
-    //  <ul className="MyUl">
-    //   <li key={value.name} className="MyLi">
-    //    
-    //     <Link to={`/projects/${value.id}`}style={{ color:'red' }}>{value.name}  </Link>
-    //     <MyButton_del onClick={this.handleDelete(value.id)} />
-    //     </div>
-    //   </li>
-    //   </ul>
-    // ));
-    // return a;
-  
-      console.log(this.state)
-      let a = this.state.list.map((value) => (
-      <li key={value.name} className="MyLi"><Link to={`/projects/${value.id}`}style={{ color:'red' }}>{value.name}  </Link>
-      <MyButton_del onClick={this.handleDelete(value.id)} />
+
+      let l = [{number:0,time:"--"},{number:1,time:"--"},{number:2,time:"--"},{number:3,time:"--"}]
+      console.log(l)
+      for(let i=0;i<this.state.table.length;i++){
+        console.log(i)
+        if (this.state.list.find(k=>k.number==i)!==undefined){
+          l[i]={number:i,time:this.state.list.find(k=>k.number==i).time}
+        } 
+      }
+      console.log(l)
+      let a = this.state.table.map((value) => (
+      <li key={value} className="MyLi">{"номер стола "+(value+1)},{"зарезервовано з:"+l.find(i=>i.number==value).time}
+      <Table disabled={l.find(i=>i.number==value).time!="--"} onClick={this.handleTable(value)} />
+      <MyButton_del onClick={this.handleDelete(value)} />
       </li>)
       )
-      return a;
+      l=[]
+      return (a);
     
   }
 
@@ -39,7 +37,9 @@ class Projects extends React.Component {
       .then((resp) => resp.data)
       .then((data) => {
         if(data.data){
+          console.log(data)
         this.setState({ list: data.data })
+        console.log(this.state.list)
       }
       else {
         window.location.href = '/login'
@@ -50,18 +50,18 @@ class Projects extends React.Component {
 // });
   }
 
-  handleSubmit = (e) => {
-   axios.post("http://127.0.0.1:5000/project_add", { name: this.state.value })
-      .then(() => {
-        this.jsonDataFromFlask();
-      })
-      .then(() => {
-        this.printState();
-      })
-      .then(() => {
-        this.setState({ value: "" });
-      });
-  };
+  handleTable =id=> (e) => {
+    axios.post("http://127.0.0.1:5000/project_add", { name: this.state.value,id:id })
+       .then(() => {
+         this.jsonDataFromFlask();
+       })
+       .then(() => {
+         this.printState();
+       })
+       .then(() => {
+         this.setState({ value: "" });
+       });
+   };
   handleDelete =project_id => e => {
     console.log(project_id)
     axios.post(`http://127.0.0.1:5000/projects/delete_project`,{id:project_id})
@@ -100,9 +100,8 @@ class Projects extends React.Component {
     return (
       <div>
         <div className="Project" >
-        <h2 >Projects</h2>
+        <h2 >Введіть бажаний час для резервації</h2>
         <Input onChange={this.handleOnChange} value={this.state.value} />
-        <MyButton onClick={this.handleSubmit} />
         </div>
         <ul className="MyUl">
         {this.printState()}
@@ -114,9 +113,16 @@ class Projects extends React.Component {
 
 class MyButton extends React.Component {
   render() {
+  
     return <button className="MyButton" onClick={this.props.onClick}>Submit</button>;
   }
 }
+class Table extends React.Component {
+  render() {
+    return <button disabled={this.props.disabled} style={{backgroundColor: 'transparent', width:"90px"}}><img style={{width:"80px"}} src="table2.png" alt="my imag" onClick={this.props.onClick} /></button>
+  }
+}
+
 class MyButton_del extends React.Component {
   render() {
     return <button  onClick={this.props.onClick}>X</button>;
